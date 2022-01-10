@@ -1,0 +1,27 @@
+# server configure
+server:
+  port: 4444
+  servlet:
+    context-path: /kindstar
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+# database profile
+spring:
+  data:
+    mongodb:
+      host: 1.117.47.229
+      port: 50001
+      username: logisticsUse
+      password: '123456'
+      authentication-database: logistics
+      database: logistics
+  datasource:
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 30
+      idle-timeout: 300000
+      max-lifetime: 360000
+      connection-test-query: SELECT 1
