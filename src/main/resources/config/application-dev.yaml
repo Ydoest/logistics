@@ -8,13 +8,14 @@ server:
       force: true
       enabled: true
 
-# database profile
+# spring profile
 spring:
+  #  database
   data:
     mongodb:
       host: 1.117.47.229
-      port: 50001
-      username: logisticsUse
+      port: 10101
+      username: logistics
       password: '123456'
       authentication-database: logistics
       database: logistics
@@ -25,3 +26,5 @@ spring:
       idle-timeout: 300000
       max-lifetime: 360000
       connection-test-query: SELECT 1
+  application:
+    name: Beta

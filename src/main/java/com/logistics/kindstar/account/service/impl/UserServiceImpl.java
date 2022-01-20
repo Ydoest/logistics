@@ -9,12 +9,16 @@ import com.logistics.kindstar.account.entity.vo.RespondVo;
 import com.logistics.kindstar.account.entity.vo.UserVo;
 import com.logistics.kindstar.account.service.UserService;
 import com.logistics.kindstar.common.constant.StatusCode;
+import com.mongodb.BasicDBObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -30,9 +34,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserAccountDao accountDao;
 
+    private MongoTemplate mongoTemplate;
+
     @Autowired
-    public UserServiceImpl(UserAccountDao accountDao) {
+    public UserServiceImpl(UserAccountDao accountDao, MongoTemplate mongoTemplate) {
         this.accountDao = accountDao;
+        this.mongoTemplate = mongoTemplate;
     }
 
     /**
@@ -72,17 +79,32 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public RespondVo<List<UserAccountData>> queryUser(QueryUserBo queryUserBo) {
-        RespondVo<List<UserAccountData>> result = new RespondVo<>();
         Pageable pageable = PageRequest.of(queryUserBo.getCurrentPage(), queryUserBo.getPageSize());
-        Page<UserAccountData> data = accountDao.findAll(pageable);
-        result.setCode(StatusCode.SUCCESS.getCode());
-        result.setMessage(StatusCode.SUCCESS.getDesc());
-        result.setCurrentPage(data.getPageable().getPageNumber());
-        result.setPageSize(data.getPageable().getPageSize());
-        result.setTotalPage(data.getTotalPages());
-        result.setTotal(data.getTotalElements());
-        result.setData(data.getContent());
-        return result;
+        Query query = new Query();
+        query.with(pageable);
+        if (queryUserBo.getUserCode() == "1") {
+            query.addCriteria(Criteria.where("user_code").is(1));
+        }
+        if (queryUserBo.getUserCode() == "2") {
+            query.addCriteria(Criteria.where("user_code").gte("2021-11-11 12:12:12"));
+        }
+        if (queryUserBo.getUserCode() == "3") {
+            query.addCriteria(Criteria.where("user_code").lte(1));
+        }
+        List<UserAccountData> userAccountData = mongoTemplate.find(query, UserAccountData.class);
+
+
+//        RespondVo<List<UserAccountData>> result = new RespondVo<>();
+//        Pageable pageable = PageRequest.of(queryUserBo.getCurrentPage(), queryUserBo.getPageSize());
+//        Page<UserAccountData> data = accountDao.findAll(specification, pageable);
+//        result.setCode(StatusCode.SUCCESS.getCode());
+//        result.setMessage(StatusCode.SUCCESS.getDesc());
+//        result.setCurrentPage(data.getPageable().getPageNumber());
+//        result.setPageSize(data.getPageable().getPageSize());
+//        result.setTotalPage(data.getTotalPages());
+//        result.setTotal(data.getTotalElements());
+//        result.setData(data.getContent());
+        return null;
     }
 
     /**
@@ -94,6 +116,7 @@ public class UserServiceImpl implements UserService {
      */
     private UserAccountData updateUser(UserBo userBo) {
         UserAccountData accountData = this.toUserAccountData(userBo);
+        UserAccountData save = mongoTemplate.save(accountData);
         return accountDao.save(accountData);
     }
 

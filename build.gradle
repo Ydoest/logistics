@@ -20,6 +20,7 @@ projects {
         mavenCentral()
     }
 
+    // buildscript 代码块中的脚本优先执行
     buildscript {
         repositories {
             maven { name "Alibaba"; url 'https://maven.aliyun.com/repository/public' }
@@ -28,6 +29,7 @@ projects {
     }
 }
 
+// 依赖关系
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -39,10 +41,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     // spring-boot-starter-data-mongodb
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+    // spring-boot-starter-data-redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     // spring-boot-starter-validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
     // spring-boot-starter-security
-//    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    // spring-boot-starter-actuator
+    implementation ("org.springframework.boot:spring-boot-starter-actuator")
     // hutool-all
     implementation("cn.hutool:hutool-all:${version_hutool}")
     // lombok
